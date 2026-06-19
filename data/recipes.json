@@ -1,0 +1,730 @@
+[
+	{
+		"name": "水",
+		"machine": "液体ポンプ",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "水",
+				"qty": 60
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "沈殿酸",
+		"machine": "耐酸性液体ポンプ",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "沈殿酸",
+				"qty": 60
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "芽針",
+		"machine": "栽培機",
+		"inputs": [
+			{
+				"name": "芽針の種",
+				"qty": 30
+			},
+			{
+				"name": "水",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "芽針",
+				"qty": 60
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "芽針の種",
+		"machine": "採種機",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "芽針の種",
+				"qty": 60
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "サンドリーフ",
+		"machine": "栽培機",
+		"inputs": [
+			{
+				"name": "サンドリーフの種",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "サンドリーフ",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "サンドリーフの種",
+		"machine": "採種機",
+		"inputs": [],
+		"outputs": [
+			{
+				"name": "サンドリーフの種",
+				"qty": 60
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "源石粉末",
+		"machine": "粉砕機",
+		"inputs": [
+			{
+				"name": "源石鉱物",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "源石粉末",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "サンドリーフ粉末",
+		"machine": "粉砕機",
+		"inputs": [
+			{
+				"name": "サンドリーフ",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "サンドリーフ粉末",
+				"qty": 90
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "高密度源石粉末",
+		"machine": "研磨機",
+		"inputs": [
+			{
+				"name": "源石粉末",
+				"qty": 60
+			},
+			{
+				"name": "サンドリーフ粉末",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "高密度源石粉末",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "青鉄塊",
+		"machine": "製錬炉",
+		"inputs": [
+			{
+				"name": "青鉄鉱物",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "青鉄塊",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "青鉄粉末",
+		"machine": "粉砕機",
+		"inputs": [
+			{
+				"name": "青鉄塊",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "青鉄粉末",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "青鉄製ボトル製造",
+		"machine": "成形機",
+		"inputs": [
+			{
+				"name": "青鉄塊",
+				"qty": 60
+			}
+		],
+		"outputs": [
+			{
+				"name": "青鉄製ボトル",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "鉄製部品",
+		"machine": "組立機",
+		"inputs": [
+			{
+				"name": "青鉄塊",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "鉄製部品",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "炭塊",
+		"machine": "製錬炉",
+		"inputs": [
+			{
+				"name": "芽針",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "炭塊",
+				"qty": 60
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "炭塊粉末",
+		"machine": "粉砕機",
+		"inputs": [
+			{
+				"name": "炭塊",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "炭塊粉末",
+				"qty": 60
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "高密度炭塊粉末",
+		"machine": "研磨機",
+		"inputs": [
+			{
+				"name": "炭塊粉末",
+				"qty": 60
+			},
+			{
+				"name": "サンドリーフ粉末",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "高密度炭塊粉末",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "安定炭塊",
+		"machine": "精錬炉",
+		"inputs": [
+			{
+				"name": "高密度炭塊粉末",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "安定炭塊",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "息壌",
+		"machine": "天有洪炉",
+		"inputs": [
+			{
+				"name": "安定炭塊",
+				"qty": 60
+			},
+			{
+				"name": "水",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "息壌",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "液化息壌",
+		"machine": "化学反応炉",
+		"inputs": [
+			{
+				"name": "息壌",
+				"qty": 30
+			},
+			{
+				"name": "水",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "液化息壌",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "壌晶廃液",
+		"machine": "化学反応炉",
+		"inputs": [
+			{
+				"name": "液化息壌",
+				"qty": 30
+			},
+			{
+				"name": "汚水",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "壌晶廃液",
+				"qty": 30
+			}
+		],
+		"byproducts": [
+			{
+				"name": "不活性壌晶廃液",
+				"qty": 30
+			}
+		]
+	},
+	{
+		"name": "不活性壌晶還元",
+		"machine": "精製機",
+		"inputs": [
+			{
+				"name": "不活性壌晶廃液",
+				"qty": 120
+			}
+		],
+		"outputs": [
+			{
+				"name": "壌晶廃液",
+				"qty": 30
+			}
+		],
+		"byproducts": [
+			{
+				"name": "水",
+				"qty": 30
+			}
+		]
+	},
+	{
+		"name": "壌晶",
+		"machine": "化学反応炉",
+		"inputs": [
+			{
+				"name": "壌晶廃液",
+				"qty": 60
+			},
+			{
+				"name": "青鉄粉末",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "壌晶",
+				"qty": 30
+			}
+		],
+		"byproducts": [
+			{
+				"name": "汚水",
+				"qty": 30
+			}
+		]
+	},
+	{
+		"name": "赤銅塊",
+		"machine": "化学反応炉",
+		"inputs": [
+			{
+				"name": "赤銅鉱物",
+				"qty": 30
+			},
+			{
+				"name": "水",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "赤銅塊",
+				"qty": 30
+			}
+		],
+		"byproducts": [
+			{
+				"name": "汚水",
+				"qty": 30
+			}
+		]
+	},
+	{
+		"name": "赤銅部品",
+		"machine": "組立機",
+		"inputs": [
+			{
+				"name": "赤銅塊",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "赤銅部品",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "赤銅ボトル",
+		"machine": "成形機",
+		"inputs": [
+			{
+				"name": "赤銅塊",
+				"qty": 60
+			}
+		],
+		"outputs": [
+			{
+				"name": "赤銅ボトル",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "赤銅粉末",
+		"machine": "粉砕機",
+		"inputs": [
+			{
+				"name": "赤銅塊",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "赤銅粉末",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "赤銅溶液",
+		"machine": "化学反応炉",
+		"inputs": [
+			{
+				"name": "赤銅粉末",
+				"qty": 30
+			},
+			{
+				"name": "沈殿酸",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "赤銅溶液",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "緋銅溶液",
+		"machine": "精製機",
+		"inputs": [
+			{
+				"name": "赤銅溶液",
+				"qty": 120
+			}
+		],
+		"outputs": [
+			{
+				"name": "緋銅溶液",
+				"qty": 30
+			}
+		],
+		"byproducts": [
+			{
+				"name": "沈殿酸",
+				"qty": 30
+			}
+		]
+	},
+	{
+		"name": "緋銅塊",
+		"machine": "化学反応炉",
+		"inputs": [
+			{
+				"name": "緋銅溶液",
+				"qty": 60
+			},
+			{
+				"name": "青鉄粉末",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "緋銅塊",
+				"qty": 30
+			}
+		],
+		"byproducts": [
+			{
+				"name": "汚水",
+				"qty": 30
+			}
+		]
+	},
+	{
+		"name": "芽針エキス",
+		"machine": "化学反応炉",
+		"inputs": [
+			{
+				"name": "芽針",
+				"qty": 30
+			},
+			{
+				"name": "水",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "芽針エキス",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "芽針エキス青鉄ボトル",
+		"machine": "充填機",
+		"inputs": [
+			{
+				"name": "青鉄製ボトル",
+				"qty": 30
+			},
+			{
+				"name": "芽針エキス",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "芽針エキス青鉄ボトル",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "芽針エキス赤銅ボトル",
+		"machine": "充填機",
+		"inputs": [
+			{
+				"name": "赤銅ボトル",
+				"qty": 30
+			},
+			{
+				"name": "芽針エキス",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "芽針エキス赤銅ボトル",
+				"qty": 30
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "小容量武陵バッテリー",
+		"machine": "包装機",
+		"inputs": [
+			{
+				"name": "高密度源石粉末",
+				"qty": 90
+			},
+			{
+				"name": "息壌",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "小容量武陵バッテリー",
+				"qty": 6
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "中容量武陵バッテリー",
+		"machine": "包装機",
+		"inputs": [
+			{
+				"name": "高密度源石粉末",
+				"qty": 120
+			},
+			{
+				"name": "壌晶",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "中容量武陵バッテリー",
+				"qty": 6
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "芽針注射剤I",
+		"machine": "包装機",
+		"inputs": [
+			{
+				"name": "鉄製部品",
+				"qty": 60
+			},
+			{
+				"name": "芽針エキス青鉄ボトル",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "芽針注射剤I",
+				"qty": 6
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "芽針注射剤II",
+		"machine": "包装機",
+		"inputs": [
+			{
+				"name": "赤銅部品",
+				"qty": 60
+			},
+			{
+				"name": "芽針エキス赤銅ボトル",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "芽針注射剤II",
+				"qty": 6
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "緋銅部品",
+		"machine": "組立機",
+		"inputs": [
+			{
+				"name": "緋銅塊",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "緋銅部品",
+				"qty": 6
+			}
+		],
+		"byproducts": []
+	},
+	{
+		"name": "重息壌",
+		"machine": "天有洪炉",
+		"inputs": [
+			{
+				"name": "息壌",
+				"qty": 60
+			},
+			{
+				"name": "壌晶廃液",
+				"qty": 30
+			}
+		],
+		"outputs": [
+			{
+				"name": "重息壌",
+				"qty": 6
+			}
+		],
+		"byproducts": []
+	}
+]

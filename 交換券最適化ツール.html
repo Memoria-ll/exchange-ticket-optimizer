@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>交換券価値最適化ツール v2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#0f1117;color:#e0e0e0;font-size:13px}
+h1{text-align:center;padding:14px;background:linear-gradient(135deg,#1a2340,#1e3a2f);color:#7de8c0;font-size:17px;border-bottom:1px solid #2a3a50}
+.layout{display:grid;grid-template-columns:300px 1fr;height:calc(100vh - 48px)}
+.lp{background:#141820;border-right:1px solid #2a3a50;overflow-y:auto;padding:10px}
+.rp{background:#0f1117;overflow-y:auto;padding:10px}
+.sec{background:#1a2030;border:1px solid #2a3a50;border-radius:6px;margin-bottom:8px;overflow:hidden}
+.sth{background:#1e2d45;padding:7px 10px;font-size:11px;font-weight:bold;color:#7de8c0}
+.sb{padding:9px}
+.sr{margin-bottom:7px}
+.sl{display:flex;justify-content:space-between;margin-bottom:2px;color:#aaa;font-size:11px}
+.sv{color:#7de8c0;font-weight:bold}
+input[type=range]{width:100%;accent-color:#7de8c0;height:4px}
+input[type=number]{background:#0f1117;border:1px solid #2a3a50;color:#e0e0e0;padding:2px 5px;border-radius:4px;width:68px;text-align:right;font-size:11px}
+.ri{display:flex;align-items:center;gap:6px;margin-top:2px}
+.ci{display:flex;align-items:center;gap:5px;padding:3px 0;cursor:pointer;font-size:11px}
+.ci input{accent-color:#7de8c0;width:12px;height:12px}
+.mb{display:flex;gap:5px}
+.mb div{flex:1;padding:5px 3px;border:1px solid #2a3a50;background:#0f1117;color:#aaa;border-radius:4px;cursor:pointer;font-size:10px;text-align:center;transition:.15s}
+.mb div.active{background:#1e3a2f;border-color:#7de8c0;color:#7de8c0;font-weight:bold}
+.rb{width:100%;padding:5px;background:#1e2d45;border:1px solid #2a3a50;color:#7de8c0;border-radius:4px;cursor:pointer;font-size:11px;margin-top:3px}
+.rb:hover{background:#2a3d5a}
+.sg{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px;margin-bottom:8px}
+.sc{background:#1a2030;border:1px solid #2a3a50;border-radius:5px;padding:8px;text-align:center}
+.sv2{font-size:19px;font-weight:bold;color:#7de8c0}
+.sl2{font-size:10px;color:#888;margin-top:1px}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{background:#1e2d45;color:#7de8c0;padding:4px 7px;text-align:left;white-space:nowrap}
+td{padding:4px 7px;border-bottom:1px solid #1a2030;white-space:nowrap}
+tr:hover td{background:#1a2030}
+.tag{display:inline-block;padding:1px 4px;border-radius:3px;font-size:10px}
+.ta{background:#1e3a2f;color:#7de8c0;border:1px solid #2a5040}
+.tb{background:#2a2030;color:#c07de8;border:1px solid #5040a0}
+.bo{background:#0f1117;border-radius:2px;height:7px;width:90px;display:inline-block;vertical-align:middle}
+.bi{height:100%;border-radius:2px;background:#7de8c0}
+.bw{background:#e8a07d}.bc{background:#e87d7d}
+.gp{color:#7de8c0}.rp{color:#e87d7d}.wp{color:#e8c07d}
+.tabs{display:flex;border-bottom:1px solid #2a3a50;margin-bottom:8px}
+.tab{padding:6px 14px;cursor:pointer;font-size:11px;color:#888;border-bottom:2px solid transparent}
+.tab.active{color:#7de8c0;border-bottom-color:#7de8c0}
+.tab-content{display:none}.tab-content.active{display:block}
+.tree-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:8px}
+.tree-card{background:#1a2030;border:1px solid #2a3a50;border-radius:6px;overflow:hidden}
+.tree-hdr{background:#1e2d45;padding:7px 10px;display:flex;justify-content:space-between;align-items:center}
+.tree-title{font-size:12px;font-weight:bold;color:#7de8c0}
+.tree-pt{font-size:11px;color:#888}
+.tree-body{padding:8px}
+.tn      {display:flex;align-items:baseline;gap:5px;padding:2px 0;line-height:1.5}
+.tn-bp   {display:flex;align-items:baseline;gap:5px;padding:1px 0;line-height:1.5}
+.tn-reuse{display:flex;align-items:baseline;gap:5px;padding:1px 0;line-height:1.5}
+.tn-src  {display:flex;align-items:baseline;gap:5px;padding:1px 0;line-height:1.5}
+.lbl{font-size:11px;color:#e0e0e0}
+.lbl-bp{font-size:10px;color:#e8a07d}
+.lbl-reuse{font-size:10px;color:#7db8e8}
+.lbl-src{font-size:10px;color:#555}
+.mch{background:#0f1117;border:1px solid #2a3a50;border-radius:3px;padding:1px 5px;font-size:10px;color:#aaa;white-space:nowrap;flex-shrink:0}
+.mch-bp{background:#1a0f00;border:1px solid #4a3020;border-radius:3px;padding:1px 5px;font-size:10px;color:#c07050;white-space:nowrap;flex-shrink:0}
+.amt{font-size:10px;color:#7de8c0;white-space:nowrap;margin-left:auto;flex-shrink:0}
+.amt-ru{font-size:10px;color:#7db8e8;white-space:nowrap;margin-left:auto;flex-shrink:0}
+.mach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:6px}
+.mach-card{background:#1a2030;border:1px solid #2a3a50;border-radius:5px;padding:7px 10px}
+.mach-name{font-size:11px;color:#aaa;margin-bottom:3px}
+.mach-val{font-size:18px;font-weight:bold;color:#7de8c0}
+.mach-sub{font-size:10px;color:#555}
+.legend{display:flex;gap:12px;margin-bottom:8px;font-size:10px;align-items:center;flex-wrap:wrap}
+.spinner{text-align:center;padding:20px;color:#7de8c0}
+.noRes{text-align:center;padding:20px;color:#888}
+</style>
+</head>
+<body>
+<h1>⚡ 交換券価値最適化ツール v2</h1>
+<div class="layout">
+<div class="lp" id="left-panel"></div>
+<div class="rp" id="rp"><div class="spinner">パラメータを設定すると自動計算されます...</div></div>
+</div>
+<script>
+// ============================================================
+//  DATA  data/ 配下の分割JSONから読み込まれます
+// ============================================================
+let RESOURCES, MACHINES, RECIPES, EXCHANGE_ITEMS;
+let BATTERY_GEN, BATTERY_PRIORITY, FIXED_POWER_OTHER;
+// 転送システム
+let TRANSFER_RATE_PER_HOUR, TRANSFER_CANDIDATES;
+// 候補分類（ロード時に動的計算）: {name, value, qty, kind}[]
+// kind: 'resource' | 'material' | 'none'
+let TRANSFER_CLASSIFIED;
+
+// ============================================================
+//  LOGIC  ここより下は編集不要です
+// ============================================================
+let MACHINE_MAP, RECIPE_MAP, RESOURCE_IDS, EXTERNAL_MAP, FIXED_POWER, BATTERY_GEN_MAP;
+let BYPRODUCT_SUPPLY, SELF_SUPPLY;
+// 採用された転送の情報（renderResult で参照）
+let ADOPTED_TRANSFER = null; // {name, qty, kind, deltaPt} | null
+let TRANSFER_RANKING = [];   // [{name, qty, kind, deltaPt}] (Δpt降順, none は末尾)
+
+// ===== レシピごとの「1ライン(=1台)あたりのアイテム消費・生産量」は定義通り =====
+// scaleLines[recipeName] = ライン数 のとき
+//   消費量 = inp.qty * scaleLines
+//   生産量 = out.qty * scaleLines
+
+// ===== 必要ライン数を再帰計算 =====
+function calcLines(itemId, targetQty, acc, visited=new Set()){
+  if(RESOURCE_IDS.has(itemId)) return;
+  if(SELF_SUPPLY.has(itemId))  return;
+  if(BYPRODUCT_SUPPLY.has(itemId)) return;
+
+  const extAvail = EXTERNAL_MAP[itemId] || 0;
+  const fromRecipe = Math.max(0, targetQty - extAvail);
+  if(fromRecipe < 0.001) return;
+
+  const recipe = RECIPES.find(r => r.outputs.some(o=>o.name===itemId));
+  if(!recipe) return;
+
+  if(visited.has(recipe.name)) return;
+  const nv = new Set(visited); nv.add(recipe.name);
+
+  const mainOut = recipe.outputs.find(o=>o.name===itemId);
+  const lines   = fromRecipe / mainOut.qty;
+
+  acc[recipe.name] = (acc[recipe.name]||0) + lines;
+
+  for(const inp of recipe.inputs){
+    if(BYPRODUCT_SUPPLY.has(inp.name)) continue;
+    if(SELF_SUPPLY.has(inp.name))      continue;
+    calcLines(inp.name, inp.qty * lines, acc, nv);
+  }
+}
+
+// ===== フロー計算 =====
+function computeFlow(finalScales, resourceLimits){
+  // Step1: 各最終アイテムから全中間レシピのライン数を積み上げ
+  const lineAcc = {};
+
+  for(const [rid, lines] of Object.entries(finalScales)){
+    if(lines < 0.001) continue;
+    lineAcc[rid] = (lineAcc[rid]||0) + lines;
+    const recipe = RECIPE_MAP[rid];
+    if(!recipe) continue;
+    for(const inp of recipe.inputs){
+      if(BYPRODUCT_SUPPLY.has(inp.name)) continue;
+      if(SELF_SUPPLY.has(inp.name))      continue;
+      calcLines(inp.name, inp.qty * lines, lineAcc);
+    }
+  }
+
+  // Step2: 採掘リソース消費量を集計
+  const resCons = {};
+  for(const [rid, lines] of Object.entries(lineAcc)){
+    if(lines < 0.001) continue;
+    const recipe = RECIPE_MAP[rid];
+    if(!recipe) continue;
+    for(const inp of recipe.inputs){
+      if(RESOURCE_IDS.has(inp.name)){
+        resCons[inp.name] = (resCons[inp.name]||0) + inp.qty * lines;
+      }
+    }
+  }
+
+  // Step3: 採掘リソース上限チェック
+  for(const res of RESOURCES){
+    const used = resCons[res.name]||0;
+    const lim  = resourceLimits[res.name]??res.defaultMax;
+    if(used > lim + 0.001) return null;
+  }
+
+  // Step4: 副産物収支
+  let dirtyGen = 0;
+  for(const [rid, lines] of Object.entries(lineAcc)){
+    const recipe = RECIPE_MAP[rid];
+    if(!recipe) continue;
+    for(const bp of (recipe.byproducts||[])){
+      if(bp.name==='汚水') dirtyGen += bp.qty * lines;
+    }
+  }
+  const soukiWasteLines = lineAcc['壌晶廃液']||0;
+  const dirtyNeed  = soukiWasteLines * 30;
+  const dirtyUsed  = Math.min(dirtyGen, dirtyNeed);
+  const dirtyDrain = Math.max(0, dirtyGen - dirtyNeed);
+  if(dirtyDrain > 0.001) lineAcc['汚水廃棄'] = (lineAcc['汚水廃棄']||0) + dirtyDrain/60;
+
+  let inactiveGen = soukiWasteLines * 30;
+  const purifN    = Math.floor(inactiveGen / 120);
+  if(purifN > 0){
+    lineAcc['不活性壌晶還元'] = (lineAcc['不活性壌晶還元']||0) + purifN;
+    const remain = inactiveGen - purifN*120;
+    if(remain > 0.001) lineAcc['不活性壌晶廃棄'] = (lineAcc['不活性壌晶廃棄']||0) + remain/60;
+  } else if(inactiveGen > 0.001){
+    lineAcc['不活性壌晶廃棄'] = (lineAcc['不活性壌晶廃棄']||0) + inactiveGen/60;
+  }
+
+  // Step5: 機械台数集計
+  const machCount = {};
+  for(const [rid, lines] of Object.entries(lineAcc)){
+    if(lines < 0.001) continue;
+    const recipe = RECIPE_MAP[rid];
+    if(!recipe||!recipe.machine) continue;
+    machCount[recipe.machine] = (machCount[recipe.machine]||0) + lines;
+  }
+
+  // Step6: 機械上限チェック
+  for(const [mid, cnt] of Object.entries(machCount)){
+    const mdef = MACHINE_MAP[mid];
+    if(mdef&&mdef.max!==null&&cnt > mdef.max+0.001) return null;
+  }
+
+  // Step7: 電力収支
+  const machinePwr = Object.entries(machCount)
+    .reduce((s,[mid,n])=>s+(MACHINE_MAP[mid]?.power||0)*n, 0);
+  const totalPwr = FIXED_POWER + machinePwr;
+
+  let powerNeeded = totalPwr;
+  const batForPow = {};
+  for(const bid of BATTERY_PRIORITY){
+    const item   = EXCHANGE_ITEMS.find(e=>e.name===bid);
+    if(!item) continue;
+    const lines  = finalScales[item.recipe]||0;
+    const recipe = RECIPE_MAP[item.recipe];
+    if(!recipe) continue;
+    const totalProd = lines * recipe.outputs[0].qty;
+    const gen       = BATTERY_GEN_MAP[bid]||0;
+    if(gen<=0||totalProd<0.001) continue;
+    const use = Math.min(totalProd, powerNeeded/gen);
+    batForPow[bid] = Math.max(0, use);
+    powerNeeded   -= batForPow[bid] * gen;
+    if(powerNeeded <= 0.001) break;
+  }
+  if(powerNeeded > 0.1) return null;
+
+  // Step8: 交換券価値
+  let ptPerMin = 0;
+  const exchDetail = {};
+  for(const item of EXCHANGE_ITEMS){
+    const lines  = finalScales[item.recipe]||0;
+    const recipe = RECIPE_MAP[item.recipe];
+    if(!recipe) continue;
+    const totalProd  = lines * recipe.outputs[0].qty;
+    const forPower   = batForPow[item.name]||0;
+    const forExchange= Math.max(0, totalProd - forPower);
+    exchDetail[item.name] = {totalProd, forPower, forExchange, pt:item.pt};
+    ptPerMin += forExchange * item.pt;
+  }
+
+  return{
+    lineAcc, machCount, machinePwr, totalPwr,
+    batForPow, exchDetail, ptPerMin,
+    resCons,
+    dirtyGen, dirtyNeed, dirtyUsed, dirtyDrain,
+    inactiveGen, purifN,
+  };
+}
+
+// ============================================================
+//  OPTIMIZER
+// ============================================================
+
+let cfg;
+let LIMITED_MACHINES, NRES, NLIM, QPWR, QSOUKI, QDIM, RES_INDEX, LIM_INDEX;
+let PURIF_RECIPE, PURIF_POWER, PURIF_LIM_IDX;
+
+function expandChain(recipeName, lines){
+  const acc={};
+  acc[recipeName]=lines;
+  const recipe=RECIPE_MAP[recipeName];
+  if(recipe){
+    for(const inp of recipe.inputs){
+      if(BYPRODUCT_SUPPLY.has(inp.name)||SELF_SUPPLY.has(inp.name)) continue;
+      calcLines(inp.name, inp.qty*lines, acc);
+    }
+  }
+  return acc;
+}
+
+function qFromLineAcc(acc){
+  const q=new Float64Array(QDIM);
+  for(const rid in acc){
+    const lines=acc[rid];
+    const recipe=RECIPE_MAP[rid];
+    if(!recipe) continue;
+    for(const inp of recipe.inputs){
+      const ri=RES_INDEX[inp.name];
+      if(ri!==undefined) q[ri]+=inp.qty*lines;
+    }
+    if(recipe.machine){
+      const mi=LIM_INDEX[recipe.machine];
+      if(mi!==undefined) q[NRES+mi]+=lines;
+      q[QPWR]+=(MACHINE_MAP[recipe.machine]?.power||0)*lines;
+    }
+  }
+  q[QSOUKI]=acc['壌晶廃液']||0;
+  return q;
+}
+
+function buildItemModel(item){
+  const probe=s=>qFromLineAcc(expandChain(item.recipe,s));
+  const PB=1024, SL=1/64;
+  const qa=probe(PB), qb=probe(2*PB), ql=probe(SL);
+  const lo=new Float64Array(QDIM), hi=new Float64Array(QDIM), dif=new Float64Array(QDIM);
+  let kj=-1, kd=0;
+  for(let j=0;j<QDIM;j++){
+    hi[j]=(qb[j]-qa[j])/PB;
+    lo[j]=ql[j]/SL;
+    const dd=Math.abs(hi[j]-lo[j]);
+    if(dd>1e-7*(1+Math.abs(hi[j])+Math.abs(lo[j]))&&dd>kd){kd=dd;kj=j;}
+  }
+  let knot=Infinity;
+  if(kj>=0){
+    knot=(PB*hi[kj]-qa[kj])/(hi[kj]-lo[kj]);
+    if(!(knot>1e-9&&knot<PB)) knot=Infinity;
+  }
+  if(knot===Infinity) hi.set(lo);
+  for(let j=0;j<QDIM;j++) dif[j]=hi[j]-lo[j];
+  const recipe=RECIPE_MAP[item.recipe];
+  return{
+    name:item.name, recipe:item.recipe, pt:item.pt,
+    outQty:recipe.outputs[0].qty,
+    gen:BATTERY_GEN_MAP[item.name]||0,
+    lo, dif, knot,
+  };
+}
+let ITEM_MODELS;
+
+function makeEvaluator(models, limits){
+  const lims=RESOURCES.map(r=>limits[r.name]??r.defaultMax);
+  const bats=BATTERY_PRIORITY.map(bid=>models.findIndex(m=>m.name===bid)).filter(i=>i>=0);
+  return function(z){
+    const q=new Float64Array(QDIM);
+    for(let i=0;i<models.length;i++){
+      const s=z[i];
+      if(!(s>=0.001)) continue;
+      const m=models[i];
+      for(let j=0;j<QDIM;j++) q[j]+=s*m.lo[j];
+      if(s>m.knot){
+        const e=s-m.knot;
+        for(let j=0;j<QDIM;j++) q[j]+=e*m.dif[j];
+      }
+    }
+    for(let j=0;j<NRES;j++) if(q[j]>lims[j]+0.001) return null;
+    const purifN=Math.floor(q[QSOUKI]*30/120);
+    for(let j=0;j<NLIM;j++){
+      const cnt=q[NRES+j]+(j===PURIF_LIM_IDX?purifN:0);
+      if(cnt>LIMITED_MACHINES[j].max+0.001) return null;
+    }
+    let need=FIXED_POWER+q[QPWR]+PURIF_POWER*purifN;
+    let lost=0;
+    for(const i of bats){
+      const m=models[i], prod=(z[i]||0)*m.outQty;
+      if(m.gen<=0||prod<0.001) continue;
+      const use=Math.min(prod, need/m.gen);
+      lost+=use*m.pt;
+      need-=use*m.gen;
+      if(need<=0.001) break;
+    }
+    if(need>0.1) return null;
+    let pt=-lost;
+    for(let i=0;i<models.length;i++) pt+=(z[i]||0)*models[i].outQty*models[i].pt;
+    return pt;
+  };
+}
+
+function makeExactEvaluator(models, limits){
+  return function(z){
+    const scales={};
+    for(let i=0;i<models.length;i++) scales[models[i].recipe]=z[i]||0;
+    const r=computeFlow(scales, limits);
+    return r?r.ptPerMin:null;
+  };
+}
+
+function itemAloneMax(m, lims){
+  let u=Infinity;
+  for(let j=0;j<NRES+NLIM;j++){
+    const cap=(j<NRES?lims[j]:LIMITED_MACHINES[j-NRES].max)+0.001;
+    const a=m.lo[j], slope2=m.lo[j]+m.dif[j];
+    if(a<=1e-12&&slope2<=1e-12) continue;
+    let s;
+    if(a>1e-12&&(m.knot===Infinity||cap<=m.knot*a)) s=cap/a;
+    else s=slope2>1e-12?m.knot+(cap-m.knot*a)/slope2:Infinity;
+    u=Math.min(u,s);
+  }
+  return Math.min(u,999);
+}
+
+function verifyModel(models, fastEv, limits, ranges){
+  const exactEv=makeExactEvaluator(models,limits);
+  let seed=123456789;
+  const rnd=()=>{seed=(seed*1103515245+12345)&0x7fffffff;return seed/0x7fffffff;};
+  for(let t=0;t<120;t++){
+    const z=models.map((m,i)=>{
+      const r=rnd();
+      if(r<0.25) return 0;
+      const v=rnd()*(ranges[i]>0?ranges[i]*1.15:3);
+      return v<0.05?0:v;
+    });
+    const a=fastEv(z), b=exactEv(z);
+    if(a===null&&b===null) continue;
+    if(a===null||b===null) return false;
+    if(Math.abs(a-b)>1e-6*(1+Math.abs(b))) return false;
+  }
+  return true;
+}
+
+function buildLP(models, lims, regime, purifPiece, purifMaxPiece){
+  const n=models.length;
+  const xIdx=[];
+  models.forEach((m,i)=>{if(m.knot<Infinity)xIdx.push(i);});
+  const d=n+xIdx.length;
+  const coef=j=>{
+    const row=new Float64Array(d);
+    for(let i=0;i<n;i++) row[i]=models[i].lo[j];
+    xIdx.forEach((mi,k)=>{row[n+k]=models[mi].dif[j];});
+    return row;
+  };
+  const A=[], b=[];
+  for(let j=0;j<NRES;j++){A.push(coef(j));b.push(lims[j]);}
+  for(let j=0;j<NLIM;j++){
+    A.push(coef(NRES+j));
+    b.push(LIMITED_MACHINES[j].max-(j===PURIF_LIM_IDX?purifPiece:0));
+  }
+  xIdx.forEach((mi,k)=>{
+    const row=new Float64Array(d); row[mi]=1; row[n+k]=-1;
+    A.push(row); b.push(models[mi].knot);
+  });
+  const sq=coef(QSOUKI);
+  if(purifPiece>0){A.push(sq.map(v=>-v));b.push(-4*purifPiece);}
+  if(purifPiece<purifMaxPiece){A.push(sq);b.push(4*(purifPiece+1));}
+  const bats=[];
+  BATTERY_PRIORITY.forEach(bid=>{
+    const i=models.findIndex(m=>m.name===bid);
+    if(i>=0&&models[i].gen>0) bats.push(i);
+  });
+  if(regime>=bats.length) return null;
+  const pw=coef(QPWR);
+  const Pconst=FIXED_POWER+PURIF_POWER*purifPiece;
+  const gRow=k=>{
+    const row=new Float64Array(d);
+    for(let j=0;j<k;j++){const i=bats[j];row[i]+=models[i].outQty*models[i].gen;}
+    return row;
+  };
+  const gk=gRow(regime), gk1=gRow(regime+1);
+  A.push(gk.map((v,t)=>v-pw[t])); b.push(Pconst);
+  A.push(pw.map((v,t)=>v-gk1[t])); b.push(-Pconst);
+  const r=bats[regime], cw=models[r].pt/models[r].gen;
+  const c=new Float64Array(d);
+  for(let i=0;i<n;i++) c[i]=models[i].outQty*models[i].pt;
+  for(let t=0;t<d;t++) c[t]-=cw*pw[t];
+  for(let j=0;j<regime;j++){
+    const i=bats[j];
+    c[i]+=cw*models[i].outQty*models[i].gen-models[i].outQty*models[i].pt;
+  }
+  return{A,b,c,cConst:-cw*Pconst,d};
+}
+
+function solveSquare(rows, idx, d){
+  const M=[];
+  for(let k=0;k<d;k++) M.push([...rows[idx[k]].a, rows[idx[k]].b]);
+  for(let col=0;col<d;col++){
+    let p=col;
+    for(let r2=col+1;r2<d;r2++) if(Math.abs(M[r2][col])>Math.abs(M[p][col])) p=r2;
+    if(Math.abs(M[p][col])<1e-9) return null;
+    if(p!==col){const t=M[p];M[p]=M[col];M[col]=t;}
+    for(let r2=0;r2<d;r2++){
+      if(r2===col) continue;
+      const f=M[r2][col]/M[col][col];
+      if(f===0) continue;
+      for(let cc=col;cc<=d;cc++) M[r2][cc]-=f*M[col][cc];
+    }
+  }
+  const z=new Array(d);
+  for(let k=0;k<d;k++) z[k]=M[k][d]/M[k][k];
+  return z;
+}
+
+function lpSolve(lp){
+  const{A,b,c,d}=lp;
+  const rows=A.map((r,i)=>{
+    let mx=Math.abs(b[i]);
+    for(const v of r) mx=Math.max(mx,Math.abs(v));
+    const s=mx>1e-12?1/mx:1;
+    return{a:Array.from(r,v=>v*s), b:b[i]*s};
+  });
+  for(let t=0;t<d;t++){
+    const a=new Array(d).fill(0); a[t]=-1;
+    rows.push({a,b:0});
+  }
+  const m=rows.length;
+  let nComb=1;
+  for(let i=0;i<d;i++) nComb=nComb*(m-i)/(i+1);
+  if(nComb>400000) return null;
+  let bestV=-Infinity, bestZ=null;
+  const idx=new Array(d);
+  const rec=(start,k)=>{
+    if(k===d){
+      const z=solveSquare(rows,idx,d);
+      if(!z) return;
+      for(const row of rows){
+        let sum=0;
+        for(let t=0;t<d;t++) sum+=row.a[t]*z[t];
+        if(sum>row.b+1e-6) return;
+      }
+      let v=0;
+      for(let t=0;t<d;t++) v+=c[t]*z[t];
+      if(v>bestV){bestV=v;bestZ=z;}
+      return;
+    }
+    for(let i=start;i<=m-(d-k);i++){idx[k]=i;rec(i+1,k+1);}
+  };
+  rec(0,0);
+  return bestZ?{z:bestZ,v:bestV+lp.cConst}:null;
+}
+
+function solveContinuous(models, lims, ranges){
+  let soukiUB=0;
+  models.forEach((m,i)=>{
+    soukiUB+=ranges[i]*Math.max(m.lo[QSOUKI],m.lo[QSOUKI]+m.dif[QSOUKI]);
+  });
+  const purifMax=Math.floor(soukiUB/4)+1;
+  let nBats=0;
+  BATTERY_PRIORITY.forEach(bid=>{if(models.some(m=>m.name===bid&&m.gen>0))nBats++;});
+  let bestV=-Infinity, best=null;
+  for(let reg=0;reg<nBats;reg++){
+    for(let N=0;N<=purifMax;N++){
+      const lp=buildLP(models,lims,reg,N,purifMax);
+      if(!lp) continue;
+      const r=lpSolve(lp);
+      if(r&&r.v>bestV){bestV=r.v;best=r.z.slice(0,models.length);}
+    }
+  }
+  return best;
+}
+
+function polish(evalFn, z0, steps){
+  let cur=z0.map(v=>v<0.005?0:v), curV=evalFn(cur);
+  for(let t=0;t<60&&curV===null;t++){
+    if(cur.every(v=>v===0)) break;
+    cur=cur.map(v=>v*0.7<1e-6?0:v*0.7);
+    curV=evalFn(cur);
+  }
+  if(curV===null) curV=-Infinity;
+  const n=cur.length;
+  for(const st of steps){
+    for(let guard=0;guard<300;guard++){
+      let improved=false;
+      for(let i=0;i<n;i++){
+        for(const dl of[st,-st]){
+          let nv=Math.max(0,cur[i]+dl);
+          if(nv>0&&nv<0.005) nv=dl<0?0:0.005;
+          if(nv===cur[i]) continue;
+          const old=cur[i]; cur[i]=nv;
+          const v=evalFn(cur);
+          if(v!==null&&v>curV+1e-9){curV=v;improved=true;}
+          else cur[i]=old;
+        }
+      }
+      for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+        if(i===j||cur[j]<st) continue;
+        const oi=cur[i], oj=cur[j];
+        cur[i]=oi+st; cur[j]=Math.max(0,oj-st);
+        const v=evalFn(cur);
+        if(v!==null&&v>curV+1e-9){curV=v;improved=true;}
+        else{cur[i]=oi;cur[j]=oj;}
+      }
+      if(!improved) break;
+    }
+  }
+  return curV>-Infinity?{z:cur,v:curV}:null;
+}
+
+function latticeSearchAsync(models, evalFn, lims, ranges, step, margin, token, onProgress, onDone, seedZ){
+  const n=models.length;
+  const counts=ranges.map(u=>Math.max(0,Math.floor(u*margin/step+1e-9)));
+  const capR=lims.map(v=>v*margin+0.001);
+  const capM=LIMITED_MACHINES.map(mm=>mm.max*margin+0.001);
+  const sufPt=new Array(n+1).fill(0);
+  for(let i=n-1;i>=0;i--) sufPt[i]=sufPt[i+1]+counts[i]*step*models[i].outQty*models[i].pt;
+  let bestV=-Infinity, bestZ=null;
+  if(seedZ){const v=evalFn(seedZ);if(v!==null){bestV=v;bestZ=seedZ.slice();}}
+  const z=new Array(n).fill(0);
+  const addQ=(q,m,s)=>{
+    for(let j=0;j<NRES+NLIM;j++){
+      q[j]+=s*m.lo[j]+(s>m.knot?(s-m.knot)*m.dif[j]:0);
+      if(q[j]>(j<NRES?capR[j]:capM[j-NRES])) return true;
+    }
+    return false;
+  };
+  function inner(i,q,prodPt){
+    if(prodPt+sufPt[i]<=bestV+1e-9) return;
+    if(i===n){
+      const v=evalFn(z);
+      if(v!==null&&v>bestV){bestV=v;bestZ=z.slice();}
+      return;
+    }
+    const m=models[i];
+    for(let kk=0;kk<=counts[i];kk++){
+      const s=kk*step;
+      z[i]=s;
+      let q2=q;
+      if(s>=0.001){
+        q2=q.slice();
+        if(addQ(q2,m,s)){z[i]=0;break;}
+      }
+      inner(i+1,q2,prodPt+s*m.outQty*m.pt);
+    }
+    z[i]=0;
+  }
+  let k0=0;
+  function chunk(){
+    if(token.cancelled){onDone(null);return;}
+    const t0=performance.now();
+    while(k0<=counts[0]&&performance.now()-t0<30){
+      const s=k0*step;
+      z[0]=s;
+      const q=new Float64Array(QDIM);
+      if(s>=0.001&&addQ(q,models[0],s)){k0=counts[0]+1;break;}
+      inner(1,q,s*models[0].outQty*models[0].pt);
+      k0++;
+    }
+    onProgress(Math.min(100,Math.round(k0/(counts[0]+1)*100)));
+    if(k0<=counts[0]) setTimeout(chunk,0);
+    else onDone(bestZ?{z:bestZ,v:bestV}:null);
+  }
+  chunk();
+}
+
+// ===== シナリオ1回分を同期で解く（外部MAP/limits差し込み済み前提）=====
+// EXTERNAL_MAP / resourceLimits は呼び出し前に設定しておくこと
+function solveScenario(models, limits){
+  const lims=RESOURCES.map(r=>limits[r.name]??r.defaultMax);
+  const fastEv=makeEvaluator(models,limits);
+  const ranges=models.map(m=>itemAloneMax(m,lims));
+  const monotone=models.every(m=>{
+    for(let j=0;j<NRES+NLIM;j++) if(m.lo[j]<-1e-9||m.lo[j]+m.dif[j]<-1e-9) return false;
+    return true;
+  });
+  const lpSeed=monotone?solveContinuous(models,lims,ranges):null;
+  if(cfg.mode==='c'){
+    const evalFn=monotone?fastEv:makeExactEvaluator(models,limits);
+    const starts=[];
+    if(lpSeed) starts.push(lpSeed);
+    starts.push(ranges.map(u=>u*0.5));
+    starts.push(ranges.map(()=>0));
+    let best=null;
+    for(const st of starts){
+      const r=polish(evalFn,st,[1,0.25,0.06,0.015,0.004,0.001]);
+      if(r&&(!best||r.v>best.v)) best=r;
+    }
+    if(!best) return null;
+    const scales={};
+    const items=EXCHANGE_ITEMS.filter(e=>cfg.enabled[e.name]);
+    items.forEach((it,i)=>{scales[it.recipe]=Math.max(0,best.z[i]||0);});
+    let result=computeFlow(scales,limits);
+    for(let t=0;t<60&&!result;t++){
+      for(const k in scales) scales[k]*=0.9995;
+      result=computeFlow(scales,limits);
+    }
+    if(!result) return null;
+    return{z:best.z, ptPerMin:result.ptPerMin};
+  } else {
+    // lattice モードは同期化が難しいため LP+polish のみ使用
+    const evalFn=monotone?fastEv:makeExactEvaluator(models,limits);
+    const step=cfg.mode==='t'?1/3:1;
+    let seed=null;
+    if(lpSeed){
+      seed=lpSeed.map(v=>Math.max(0,Math.round(v/step)*step));
+      while(seed.some(v=>v>0)&&evalFn(seed)===null){
+        const mi=seed.indexOf(Math.max(...seed));
+        seed[mi]=Math.max(0,seed[mi]-step);
+      }
+      if(evalFn(seed)===null) seed=null;
+    }
+    if(!seed) seed=ranges.map(()=>0);
+    const r=polish(evalFn,seed,[1,0.25,0.06,0.015,0.004,0.001]);
+    if(!r) return null;
+    const scales={};
+    const items=EXCHANGE_ITEMS.filter(e=>cfg.enabled[e.name]);
+    items.forEach((it,i)=>{scales[it.recipe]=Math.max(0,r.z[i]||0);});
+    let result=computeFlow(scales,limits);
+    for(let t=0;t<60&&!result;t++){
+      for(const k in scales) scales[k]*=0.9995;
+      result=computeFlow(scales,limits);
+    }
+    if(!result) return null;
+    return{z:r.z, ptPerMin:result.ptPerMin};
+  }
+}
+
+function optimizeAsync(token, onProgress, onDone){
+  const items=EXCHANGE_ITEMS.filter(e=>cfg.enabled[e.name]);
+  if(items.length===0){onDone(null);return;}
+
+  // ベースラインモデル（転送なし）
+  const baseLimits={...cfg.resourceLimits};
+
+  // verify は1回だけ（ベースラインで実施）
+  // ベースライン: EXTERNAL_MAP={}, limits=元
+  EXTERNAL_MAP={};
+
+  const baseModels=items.map(it=>buildItemModel(it));
+  const baseFastEv=makeEvaluator(baseModels,baseLimits);
+  const baseLims=RESOURCES.map(r=>baseLimits[r.name]??r.defaultMax);
+  const baseRanges=baseModels.map(m=>itemAloneMax(m,baseLims));
+  const baseMonotone=baseModels.every(m=>{
+    for(let j=0;j<NRES+NLIM;j++) if(m.lo[j]<-1e-9||m.lo[j]+m.dif[j]<-1e-9) return false;
+    return true;
+  });
+  if(!baseMonotone) console.warn('消費モデルが非単調です。');
+
+  setTimeout(()=>{
+    if(token.cancelled){onDone(null);return;}
+
+    // verify 1回のみ
+    console.time('verify');
+    const modelOk=baseMonotone&&verifyModel(baseModels,baseFastEv,baseLimits,baseRanges);
+    console.timeEnd('verify');
+
+    onProgress(5);
+
+    // ベースライン ptPerMin を計算
+    console.time('baseline');
+    EXTERNAL_MAP={};
+    const baseResult=solveScenario(baseModels, baseLimits);
+    console.timeEnd('baseline');
+    const baselinePt=baseResult?baseResult.ptPerMin:0;
+    onProgress(10);
+
+    if(token.cancelled){onDone(null);return;}
+
+    // 転送候補をシナリオごとに評価
+    const materialCandidates=TRANSFER_CLASSIFIED.filter(c=>c.kind==='material');
+    const resourceCandidates=TRANSFER_CLASSIFIED.filter(c=>c.kind==='resource');
+    const noneCandidates=TRANSFER_CLASSIFIED.filter(c=>c.kind==='none');
+
+    const ranking=[];
+
+    // resource 候補: モデル再構築不要（EXTERNAL_MAP={}＝ベースラインと同一）
+    console.time('resource_candidates');
+    for(const cand of resourceCandidates){
+      if(token.cancelled) break;
+      EXTERNAL_MAP={};
+      const resLimits={...baseLimits};
+      resLimits[cand.name]=(resLimits[cand.name]||0)+cand.qty;
+      // resourceLimitsを変えるだけ、モデルはベースライン流用
+      const r=solveScenario(baseModels, resLimits);
+      const pt=r?r.ptPerMin:baselinePt;
+      ranking.push({name:cand.name, qty:cand.qty, kind:'resource', deltaPt:pt-baselinePt});
+    }
+    console.timeEnd('resource_candidates');
+
+    onProgress(20);
+
+    // material 候補: EXTERNAL_MAP を設定しモデル再構築
+    console.time('material_candidates');
+    let matDone=0;
+    for(const cand of materialCandidates){
+      if(token.cancelled) break;
+      EXTERNAL_MAP={[cand.name]:cand.qty};
+      const matModels=items.map(it=>buildItemModel(it));
+      const r=solveScenario(matModels, baseLimits);
+      const pt=r?r.ptPerMin:baselinePt;
+      ranking.push({name:cand.name, qty:cand.qty, kind:'material', deltaPt:pt-baselinePt});
+      matDone++;
+      onProgress(20+Math.round(matDone/materialCandidates.length*60));
+    }
+    console.timeEnd('material_candidates');
+
+    if(token.cancelled){onDone(null);return;}
+
+    // none 候補: Δpt=0（構造上）
+    for(const cand of noneCandidates){
+      ranking.push({name:cand.name, qty:cand.qty, kind:'none', deltaPt:0});
+    }
+
+    // Δpt最大の候補を採用
+    ranking.sort((a,b)=>{
+      if(a.kind==='none'&&b.kind!=='none') return 1;
+      if(a.kind!=='none'&&b.kind==='none') return -1;
+      return b.deltaPt-a.deltaPt;
+    });
+
+    const bestCand=ranking.find(c=>c.kind!=='none'&&c.deltaPt>1e-9)||null;
+
+    onProgress(85);
+
+    // 採用候補で最終解を構築
+    let finalLimits={...baseLimits};
+    if(bestCand){
+      if(bestCand.kind==='material'){
+        EXTERNAL_MAP={[bestCand.name]:bestCand.qty};
+      } else if(bestCand.kind==='resource'){
+        EXTERNAL_MAP={};
+        finalLimits={...baseLimits};
+        finalLimits[bestCand.name]=(finalLimits[bestCand.name]||0)+bestCand.qty;
+      }
+    } else {
+      EXTERNAL_MAP={};
+    }
+
+    // 採用状態で最終モデル構築・最適化
+    const finalModels=items.map(it=>buildItemModel(it));
+
+    // 最終解は lattice/polish 含む完全最適化
+    const finalLims=RESOURCES.map(r=>finalLimits[r.name]??r.defaultMax);
+    const finalFastEv=makeEvaluator(finalModels,finalLimits);
+    const finalRanges=finalModels.map(m=>itemAloneMax(m,finalLims));
+    const finalMonotone=finalModels.every(m=>{
+      for(let j=0;j<NRES+NLIM;j++) if(m.lo[j]<-1e-9||m.lo[j]+m.dif[j]<-1e-9) return false;
+      return true;
+    });
+
+    const finish=zArr=>{
+      if(token.cancelled){onDone(null);return;}
+      if(!zArr){onDone(null);return;}
+      const scales={};
+      items.forEach((it,i)=>{scales[it.recipe]=Math.max(0,zArr[i]||0);});
+      let result=computeFlow(scales,finalLimits);
+      for(let t=0;t<60&&!result;t++){
+        for(const k in scales) scales[k]*=0.9995;
+        result=computeFlow(scales,finalLimits);
+      }
+      if(!result){onDone(null);return;}
+      result.scales=scales;
+      result.ptPerHour=result.ptPerMin*60;
+      result.transferRanking=ranking;
+      result.adoptedTransfer=bestCand;
+      result.baselinePt=baselinePt;
+      // global に確定（buildItemTree が参照する EXTERNAL_MAP は既に設定済み）
+      ADOPTED_TRANSFER=bestCand;
+      TRANSFER_RANKING=ranking;
+      onDone(result);
+    };
+
+    const evalFn=finalMonotone?finalFastEv:makeExactEvaluator(finalModels,finalLimits);
+    const margin=finalMonotone?1:1.5;
+    onProgress(88);
+    const lpSeed=finalMonotone?solveContinuous(finalModels,finalLims,finalRanges):null;
+    onProgress(92);
+
+    if(cfg.mode==='c'){
+      setTimeout(()=>{
+        if(token.cancelled){onDone(null);return;}
+        const starts=[];
+        if(lpSeed) starts.push(lpSeed);
+        starts.push(finalRanges.map(u=>u*0.5));
+        starts.push(finalRanges.map(()=>0));
+        let best=null;
+        for(const st of starts){
+          const r=polish(evalFn,st,[1,0.25,0.06,0.015,0.004,0.001]);
+          if(r&&(!best||r.v>best.v)) best=r;
+        }
+        onProgress(99);
+        finish(best?best.z:null);
+      },0);
+    }else{
+      const step=cfg.mode==='t'?1/3:1;
+      let seed=null;
+      if(lpSeed){
+        seed=lpSeed.map(v=>Math.max(0,Math.round(v/step)*step));
+        while(seed.some(v=>v>0)&&evalFn(seed)===null){
+          const mi=seed.indexOf(Math.max(...seed));
+          seed[mi]=Math.max(0,seed[mi]-step);
+        }
+        if(evalFn(seed)===null) seed=null;
+      }
+      latticeSearchAsync(finalModels,evalFn,finalLims,finalRanges,step,margin,token,
+        p=>onProgress(92+Math.round(p*0.07)),
+        r=>finish(r?r.z:null),
+        seed);
+    }
+  },0);
+}
+
+// ===== ツリー構築 =====
+function f2(n){
+  if(n===null||n===undefined) return'';
+  const v=+n;
+  return Math.abs(v-Math.round(v))<0.001?Math.round(v).toString():(+v.toFixed(2)).toString();
+}
+
+function buildItemTree(itemName, result){
+  const item = EXCHANGE_ITEMS.find(e=>e.name===itemName);
+  if(!item) return null;
+  const{lineAcc, exchDetail, purifN, inactiveGen} = result;
+
+  function N(label,machine,mtype,cnt,amt,unit,kind,children){
+    return{label,machine,mtype,cnt,amt,unit,kind:kind||'normal',children:children||[]};
+  }
+  const SRC  =(label,amt,unit)=>N(label,null,null,null,amt,unit,'source',[]);
+  const BP   =(label,mach,mtype,cnt)=>N(label,mach,mtype,cnt,null,null,'byproduct',[]);
+  const REUSE=(label,amt,unit,ch)=>N(label,null,null,null,amt,unit,'reuse',ch||[]);
+
+  function rNode(itemId, targetQty, visited){
+    if(RESOURCE_IDS.has(itemId)){
+      return SRC(`${itemId}（採掘）`, targetQty, '/m');
+    }
+    if(SELF_SUPPLY.has(itemId)){
+      return SRC(`${itemId}（採種機で自給）`, null, null);
+    }
+    if(itemId==='汚水'){
+      return REUSE(`汚水（各工程副産物から集約） ${f2(targetQty)}/m`, targetQty, '/m');
+    }
+    if(itemId==='不活性壌晶廃液'){
+      return REUSE(`不活性壌晶廃液（精製機${purifN}台で還元） ${f2(targetQty)}/m`, targetQty, '/m');
+    }
+
+    const extAvail = EXTERNAL_MAP[itemId]||0;
+    if(extAvail > 0){
+      const fromExt  = Math.min(extAvail, targetQty);
+      const fromSelf = Math.max(0, targetQty - extAvail);
+      const children = [];
+      if(fromExt>0.001){
+        children.push(SRC(`${itemId}（外部供給 ${f2(fromExt)}/m）`, fromExt, '/m'));
+      }
+      if(fromSelf>0.001){
+        const recipe = RECIPES.find(r=>r.outputs.some(o=>o.name===itemId)&&!r.byproducts?.some(b=>b.name===itemId));
+        if(recipe && !visited.has(recipe.name)){
+          children.push(rNode2(recipe, fromSelf, itemId, visited));
+        }
+      }
+      if(children.length===1) return children[0];
+      return N(itemId, null, null, null, targetQty, '/m', 'normal', children);
+    }
+
+    const recipe = RECIPES.find(r=>r.outputs.some(o=>o.name===itemId));
+    if(!recipe) return SRC(`${itemId}（供給源不明）`, targetQty, '/m');
+    if(visited.has(recipe.name)) return SRC(`[循環: ${recipe.name}]`, targetQty, '/m');
+    return rNode2(recipe, targetQty, itemId, visited);
+  }
+
+  function rNode2(recipe, targetQty, mainItemId, visited){
+    const mainOut = recipe.outputs.find(o=>o.name===mainItemId)||recipe.outputs[0];
+    const lines   = targetQty / mainOut.qty;
+    const mdef    = MACHINE_MAP[recipe.machine];
+    const nv      = new Set(visited); nv.add(recipe.name);
+    const children= [];
+
+    for(const inp of recipe.inputs){
+      children.push(rNode(inp.name, inp.qty*lines, nv));
+    }
+    for(const bp of (recipe.byproducts||[])){
+      const bq = bp.qty*lines;
+      if(bp.name==='汚水'){
+        children.push(REUSE(`副産物: 汚水 ${f2(bq)}/m → 壌晶廃液生産へ`, bq, '/m'));
+      } else if(bp.name==='不活性壌晶廃液'){
+        children.push(N(`副産物: 不活性壌晶廃液 ${f2(bq)}/m`, null,null,null,null,null,'byproduct',[
+          ...(purifN>0?[REUSE(`精製機${purifN}台 → 壌晶廃液${f2(purifN*30)}/m+水${f2(purifN*30)}/m回収`,null,null)]:[]),
+          ...(inactiveGen-purifN*120>0.001?[BP(`余剰${f2(inactiveGen-purifN*120)}/m→廃棄`,'排水処理機','排水処理機',f2((inactiveGen-purifN*120)/60))]:[]),
+        ]));
+      } else if(bp.name==='沈殿酸'){
+        children.push(REUSE(`副産物: 沈殿酸 ${f2(bq)}/m → 赤銅溶液生産へ再利用`, bq, '/m'));
+      } else if(bp.name==='水'){
+        children.push(REUSE(`副産物: 水 ${f2(bq)}/m → 水ポンプ削減`, bq, '/m'));
+      } else {
+        children.push(BP(`副産物: ${bp.name} ${f2(bq)}/m`, null,null,null));
+      }
+    }
+
+    const label = `${recipe.outputs.map(o=>`${o.name} ${f2(o.qty*lines)}/m`).join(', ')}`;
+    return N(label, mdef?.name||recipe.machine, recipe.machine, f2(lines), targetQty, '/m', 'normal', children);
+  }
+
+  const recipe = RECIPE_MAP[item.recipe];
+  if(!recipe) return null;
+  const lines = result.scales[item.recipe]||0;
+  if(lines<0.001) return null;
+  const totalQty = lines * recipe.outputs[0].qty;
+  const tree = rNode2(recipe, totalQty, item.recipe, new Set());
+  if(tree) tree.label = `${item.name}（生産${f2(totalQty)}/m）`;
+  return tree;
+}
+
+// ===== ツリーHTML =====
+function renderNode(n,depth){
+  if(!n) return'';
+  const pad=depth*14;
+  let rowCls,lblCls,amtCls,mchHtml='',amtHtml='';
+  if(n.kind==='byproduct'){
+    rowCls='tn-bp';lblCls='lbl-bp';amtCls='amt';
+    if(n.machine) mchHtml=`<span class="mch-bp">${n.machine}×${n.cnt!=null?f2(n.cnt):''}</span>`;
+  } else if(n.kind==='reuse'){
+    rowCls='tn-reuse';lblCls='lbl-reuse';amtCls='amt-ru';
+  } else if(n.kind==='source'){
+    rowCls='tn-src';lblCls='lbl-src';amtCls='amt';
+  } else {
+    rowCls='tn';lblCls='lbl';amtCls='amt';
+    if(n.machine) mchHtml=`<span class="mch">${n.machine}×${n.cnt!=null?f2(n.cnt):''}</span>`;
+  }
+  if(n.amt!=null&&n.kind!=='byproduct')
+    amtHtml=`<span class="${amtCls}">${f2(n.amt)}${n.unit||''}</span>`;
+  let html=`<div class="${rowCls}" style="padding-left:${pad}px">
+    <span style="color:#333;font-size:10px;flex-shrink:0">${depth>0?'└':''}</span>
+    <span class="${lblCls}">${n.label}</span>${mchHtml}${amtHtml}
+  </div>`;
+  for(const c of(n.children||[])) html+=renderNode(c,depth+1);
+  return html;
+}
+
+function collectMachines(n,acc={}){
+  if(!n) return acc;
+  if(n.mtype&&n.cnt!=null) acc[n.mtype]=(acc[n.mtype]||0)+(+n.cnt||0);
+  for(const c of(n.children||[])) collectMachines(c,acc);
+  return acc;
+}
+
+// ===== UI =====
+function fmt(n,d=1){return Math.abs(n)<0.001?'0':(+n.toFixed(d)).toString();}
+function tagH(tags){return tags.map(t=>`<span class="tag t${t.toLowerCase()}">${t}</span>`).join('');}
+function barH(v,mx){
+  const p=mx>0?Math.min(100,v/mx*100):0;
+  const c=p>90?'bc':p>70?'bw':'';
+  return`<div class="bo"><div class="bi ${c}" style="width:${p}%"></div></div> ${fmt(p,1)}%`;
+}
+
+let activeTab='summary';
+function setTab(t){
+  activeTab=t;
+  document.querySelectorAll('.tab').forEach(e=>e.classList.toggle('active',e.dataset.t===t));
+  document.querySelectorAll('.tab-content').forEach(e=>e.classList.toggle('active',e.id==='tab_'+t));
+}
+
+function buildLeftPanel(){
+  const lp=document.getElementById('left-panel');
+  const resHtml=RESOURCES.map((res,i)=>`
+    <div class="sr">
+      <div class="sl"><span>${res.name}</span><span class="sv" id="v_r${i}">${res.defaultMax}</span></div>
+      <input type="range" id="s_r${i}" min="0" max="${res.defaultMax*2}" step="30" value="${res.defaultMax}">
+      <div class="ri"><input type="number" id="n_r${i}" value="${res.defaultMax}" min="0" max="${res.defaultMax*2}" step="30"></div>
+    </div>`).join('');
+  const itemHtml=EXCHANGE_ITEMS.map(it=>
+    `<label class="ci"><input type="checkbox" checked onchange="cfg.enabled['${it.name}']=this.checked;sch()">
+    <span>${it.name} <span style="color:#888">(${it.pt}pt)</span></span></label>`).join('');
+  lp.innerHTML=`
+    <div class="sec"><div class="sth">⛏ 採掘リソース上限 (/m)</div>
+      <div class="sb">${resHtml}<button class="rb" onclick="resetDef()">↺ デフォルトに戻す</button></div></div>
+    <div class="sec"><div class="sth">📦 生産アイテム選択</div><div class="sb">${itemHtml}</div></div>
+    <div class="sec"><div class="sth">⚙ 最適化モード</div><div class="sb">
+      <div class="mb">
+        <div class="active" data-m="c" onclick="setMode('c')">連続値</div>
+        <div data-m="t" onclick="setMode('t')">1/3刻み</div>
+        <div data-m="i" onclick="setMode('i')">整数ライン</div>
+      </div></div></div>`;
+  RESOURCES.forEach((res,i)=>{
+    const s=document.getElementById(`s_r${i}`);
+    const n=document.getElementById(`n_r${i}`);
+    const v=document.getElementById(`v_r${i}`);
+    s.addEventListener('input',()=>{n.value=s.value;v.textContent=s.value;cfg.resourceLimits[res.name]=+s.value;sch();});
+    n.addEventListener('change',()=>{s.value=n.value;v.textContent=n.value;cfg.resourceLimits[res.name]=+n.value;sch();});
+  });
+}
+
+function resetDef(){
+  RESOURCES.forEach((res,i)=>{
+    cfg.resourceLimits[res.name]=res.defaultMax;
+    document.getElementById(`s_r${i}`).value=res.defaultMax;
+    document.getElementById(`n_r${i}`).value=res.defaultMax;
+    document.getElementById(`v_r${i}`).textContent=res.defaultMax;
+  });
+  sch();
+}
+function setMode(m){
+  cfg.mode=m;
+  document.querySelectorAll('.mb div').forEach(b=>b.classList.toggle('active',b.dataset.m===m));
+  sch();
+}
+
+let onProgress;
+
+function renderResult(res){
+  const rp=document.getElementById('rp');
+  if(!res){rp.innerHTML='<div class="noRes">⚠ 有効な解が見つかりませんでした。制約を緩和してください。</div>';return;}
+  const{lineAcc,machCount,machinePwr,totalPwr,batForPow,exchDetail,
+        ptPerMin,ptPerHour,resCons,
+        dirtyGen,dirtyNeed,dirtyUsed,dirtyDrain,inactiveGen,purifN}=res;
+  const showLines=cfg.mode!=='c';
+
+  let genTotal=0;
+  for(const[bid,fp] of Object.entries(batForPow)) genTotal+=fp*(BATTERY_GEN_MAP[bid]||0);
+  const surplus=genTotal-totalPwr;
+
+  const machLimitStr=MACHINES.filter(m=>m.max!==null)
+    .map(m=>`${m.name}: ${f2(machCount[m.name]||0)} / ${m.max}`).join(' ｜ ');
+
+  const sum=`<div class="sg">
+    <div class="sc"><div class="sv2">${Math.round(ptPerMin).toLocaleString()}</div><div class="sl2">最大交換券価値 (pt/m)</div></div>
+    <div class="sc"><div class="sv2">${Math.round(ptPerHour).toLocaleString()}</div><div class="sl2">最大交換券価値 (pt/h)</div></div>
+    <div class="sc"><div class="sv2" style="font-size:12px;color:#aaa">${machLimitStr}</div><div class="sl2">上限付き機械</div></div>
+    <div class="sc"><div class="sv2" style="color:${surplus>=0?'#7de8c0':'#e87d7d'}">${fmt(surplus,0)} W/s</div><div class="sl2">電力余剰</div></div>
+  </div>`;
+
+  const batItems=EXCHANGE_ITEMS.filter(e=>BATTERY_GEN_MAP[e.name]);
+  const batHd=`<tr><th>アイテム</th><th>納品先</th><th>単価</th><th>実生産/m</th><th>電力用/m</th><th>交換用/m</th><th>価値/m</th>${showLines?'<th>ライン</th>':''}</tr>`;
+  const batRows=batItems.map(it=>{
+    const d=exchDetail[it.name]||{};
+    return`<tr style="${cfg.enabled[it.name]?'':'opacity:.4'}">
+      <td>${it.name}</td><td>${tagH(it.tags)}</td><td>${it.pt}</td>
+      <td>${fmt(d.totalProd||0)}</td><td class="wp">${fmt(d.forPower||0)}</td>
+      <td class="gp">${fmt(d.forExchange||0)}</td><td class="gp">${fmt((d.forExchange||0)*it.pt)}</td>
+      ${showLines?`<td>${f2(res.scales[it.recipe]||0)}</td>`:''}</tr>`;
+  }).join('');
+
+  const othItems=EXCHANGE_ITEMS.filter(e=>!BATTERY_GEN_MAP[e.name]);
+  const othHd=`<tr><th>アイテム</th><th>納品先</th><th>単価</th><th>生産/m</th><th>価値/m</th>${showLines?'<th>ライン</th>':''}</tr>`;
+  const othRows=othItems.map(it=>{
+    const d=exchDetail[it.name]||{};
+    return`<tr style="${cfg.enabled[it.name]?'':'opacity:.4'}">
+      <td>${it.name}</td><td>${tagH(it.tags)}</td><td>${it.pt}</td>
+      <td class="gp">${fmt(d.forExchange||0)}</td><td class="gp">${fmt((d.forExchange||0)*it.pt)}</td>
+      ${showLines?`<td>${f2(res.scales[it.recipe]||0)}</td>`:''}</tr>`;
+  }).join('');
+
+  const pwrRows=[
+    ...BATTERY_GEN.map(b=>{
+      const fp=batForPow[b.name]||0;
+      return`<tr><td>${b.name} ×${fmt(fp)}発電</td><td class="gp">+${fmt(fp*b.genPerUnit,0)} W/s</td></tr>`;
+    }),
+    `<tr><td>固定消費（採掘+その他）</td><td class="rp">-${FIXED_POWER} W/s</td></tr>`,
+    `<tr><td>機械消費</td><td class="rp">-${fmt(machinePwr,0)} W/s</td></tr>`,
+    `<tr><td><b>余剰</b></td><td class="${surplus>=0?'gp':'rp'}"><b>${fmt(surplus,0)} W/s</b></td></tr>`,
+  ].join('');
+
+  const resRows=RESOURCES.map(r=>{
+    const used=resCons[r.name]||0;
+    const baseLim=cfg.resourceLimits[r.name];
+    // resource 転送で上限緩和された場合は実効上限を表示
+    const adopted=res.adoptedTransfer;
+    const transferBonus=(adopted&&adopted.kind==='resource'&&adopted.name===r.name)?adopted.qty:0;
+    const lim=baseLim+transferBonus;
+    const transferLabel=transferBonus>0?` <span style="color:#7de8c0;font-size:10px">（+${fmt(transferBonus)} 転送供給）</span>`:'';
+    return`<tr><td>${r.name}${transferLabel}</td><td>${fmt(used)}</td><td>${lim}</td>
+      <td class="${used>lim?'rp':'gp'}">${fmt(lim-used)}</td><td>${barH(used,lim)}</td></tr>`;
+  }).join('');
+  // material 転送の実使用量表示
+  const adopted=res.adoptedTransfer;
+  const extRows=(adopted&&adopted.kind==='material')?(()=>{
+    const extAvail=adopted.qty;
+    const used=Math.min(extAvail, EXTERNAL_MAP[adopted.name]?extAvail:0);
+    // 実際の消費量を lineAcc ベースで算出: 全レシピで该当 input を参照しているライン分
+    let actualUsed=0;
+    for(const[rid,lines] of Object.entries(lineAcc)){
+      const recipe=RECIPE_MAP[rid];
+      if(!recipe) continue;
+      for(const inp of recipe.inputs){
+        if(inp.name===adopted.name) actualUsed+=inp.qty*lines;
+      }
+    }
+    const consumed=Math.min(extAvail, actualUsed);
+    return`<tr><td>${adopted.name}（転送供給）</td><td>${fmt(consumed)}</td><td>${fmt(extAvail)}</td>
+      <td class="gp">${fmt(extAvail-consumed)}</td><td>${barH(consumed,extAvail)}</td></tr>`;
+  })():'';
+
+  const grossOutput = {};
+  const totalConsumed = {};
+
+  for(const [rid, lines] of Object.entries(lineAcc)){
+    if(lines<0.001) continue;
+    const recipe=RECIPE_MAP[rid];
+    if(!recipe) continue;
+    for(const o of recipe.outputs){
+      grossOutput[o.name]=(grossOutput[o.name]||0)+o.qty*lines;
+    }
+    for(const bp of (recipe.byproducts||[])){
+      grossOutput[bp.name]=(grossOutput[bp.name]||0)+bp.qty*lines;
+    }
+    for(const inp of recipe.inputs){
+      totalConsumed[inp.name]=(totalConsumed[inp.name]||0)+inp.qty*lines;
+    }
+  }
+
+  const finalOutput = {};
+  const allIds = new Set([...Object.keys(grossOutput),...Object.keys(totalConsumed)]);
+  for(const id of allIds){
+    const net=(grossOutput[id]||0)-(totalConsumed[id]||0);
+    if(net>0.001) finalOutput[id]=net;
+  }
+
+  const catExchange=['中容量武陵バッテリー','小容量武陵バッテリー','芽針注射剤I','芽針注射剤II','緋銅部品','重息壌'];
+  const catWaste=['汚水','不活性壌晶廃液','水'];
+  const finalRows = [
+    ...catExchange.filter(id=>finalOutput[id]),
+    ...Object.keys(finalOutput).filter(id=>!catExchange.includes(id)&&!catWaste.includes(id)).sort(),
+    ...catWaste.filter(id=>finalOutput[id]),
+  ].map(id=>{
+    const qty=finalOutput[id];
+    const isExchange=catExchange.includes(id);
+    const isWaste=catWaste.includes(id);
+    const color=isExchange?'class="gp"':isWaste?'class="wp"':'';
+    return`<tr><td ${color}>${id}</td><td ${color}>${fmt(qty)}/m</td><td ${color}>${fmt(qty*60)}/h</td></tr>`;
+  }).join('');
+
+  const finalOutputHtml=`
+    <div style="margin-top:8px;border-top:1px solid #2a3a50;padding-top:6px">
+      <div style="font-size:11px;font-weight:bold;color:#7de8c0;margin-bottom:4px">📦 最終生成物一覧</div>
+      <div style="font-size:10px;color:#555;margin-bottom:4px">途中消費を除いた純粋な最終残量（<span class="gp">緑=交換券</span> <span class="wp">黄=廃液・不要流体</span>）</div>
+      <table><thead><tr><th>アイテム</th><th>量/m</th><th>量/h</th></tr></thead><tbody>${finalRows}</tbody></table>
+    </div>`;
+
+  const byproductHtml=`
+    <div style="margin-top:8px;border-top:1px solid #2a3a50;padding-top:6px">
+      <div style="font-size:11px;font-weight:bold;color:#7de8c0;margin-bottom:4px">💧 汚水収支</div>
+      <table><tbody>
+        <tr><td>発生</td><td class="gp">+${fmt(dirtyGen)}/m</td></tr>
+        <tr><td>壌晶廃液生産へ充当</td><td class="wp">-${fmt(dirtyUsed)}/m</td></tr>
+        <tr><td>余剰廃棄</td><td class="${dirtyDrain>0.001?'rp':'gp'}">${fmt(dirtyDrain)}/m${dirtyDrain<0.001?' （全量活用）':''}</td></tr>
+      </tbody></table>
+    </div>
+    <div style="margin-top:8px;border-top:1px solid #2a3a50;padding-top:6px">
+      <div style="font-size:11px;font-weight:bold;color:#7de8c0;margin-bottom:4px">♻ 不活性壌晶廃液収支</div>
+      <table><tbody>
+        <tr><td>発生</td><td>${fmt(inactiveGen)}/m</td></tr>
+        <tr><td>精製機投入（${purifN}台×120/m）</td><td class="wp">-${fmt(purifN*120)}/m</td></tr>
+        <tr><td>　→ 壌晶廃液回収</td><td class="gp">+${fmt(purifN*30)}/m</td></tr>
+        <tr><td>　→ 水回収</td><td class="gp">+${fmt(purifN*30)}/m</td></tr>
+        <tr><td>余剰廃棄</td><td class="${inactiveGen-purifN*120>0.001?'rp':'gp'}">${fmt(Math.max(0,inactiveGen-purifN*120))}/m</td></tr>
+      </tbody></table>
+    </div>${finalOutputHtml}`;
+
+  const grandTotal=Object.values(machCount).reduce((s,v)=>s+v,0);
+  const allMachCards=Object.entries(machCount).filter(([k,v])=>v>0.001)
+    .sort((a,b)=>(MACHINE_MAP[b[0]]?.power||0)-(MACHINE_MAP[a[0]]?.power||0))
+    .map(([k,v])=>{
+      const m=MACHINE_MAP[k];
+      const over=m?.max!=null&&v>m.max+0.001;
+      return`<div class="mach-card" style="${over?'border-color:#e87d7d':''}">
+        <div class="mach-name">${m?.name||k}${m?.max?` (上限${m.max})`:''}</div>
+        <div class="mach-val" style="${over?'color:#e87d7d':''}">${f2(v)}</div>
+        <div class="mach-sub">${m?.power||0} W/s × ${f2(v)} = ${fmt((m?.power||0)*v,0)} W/s</div>
+      </div>`;
+    }).join('');
+
+  const activeItems=EXCHANGE_ITEMS.filter(e=>cfg.enabled[e.name]&&(res.scales[e.recipe]||0)>0.001);
+  let treeCards='';
+  for(const it of activeItems){
+    const tree=buildItemTree(it.name,res);
+    if(!tree) continue;
+    const d=exchDetail[it.name]||{};
+    const itemMach=collectMachines(tree);
+    const machRows=Object.entries(itemMach).filter(([k,v])=>v>0.001)
+      .sort((a,b)=>b[1]-a[1])
+      .map(([k,v])=>`<tr><td>${MACHINE_MAP[k]?.name||k}</td><td class="gp">${f2(v)}</td><td class="wp">${fmt((MACHINE_MAP[k]?.power||0)*v,0)} W/s</td></tr>`).join('');
+    treeCards+=`<div class="tree-card">
+      <div class="tree-hdr">
+        <div class="tree-title">${it.name} ${tagH(it.tags)}</div>
+        <div class="tree-pt">${fmt(d.forExchange||0)}/m → <span style="color:#7de8c0">${fmt((d.forExchange||0)*it.pt)} pt/m</span></div>
+      </div>
+      <div class="tree-body">
+        ${renderNode(tree,0)}
+        <div style="margin-top:8px;border-top:1px solid #2a3a50;padding-top:6px">
+          <div style="font-size:10px;color:#555;margin-bottom:4px">▶ 使用機械台数</div>
+          <table><thead><tr><th>機械</th><th>台数</th><th>消費電力</th></tr></thead><tbody>${machRows}</tbody></table>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const legend=`<div class="legend">
+    <span style="color:#aaa">凡例：</span>
+    <span style="color:#e0e0e0">■ 通常</span>
+    <span style="color:#e8a07d">■ 副産物（廃棄）</span>
+    <span style="color:#7db8e8">■ 副産物（再利用）</span>
+    <span style="color:#555">■ 採掘・外部供給</span>
+  </div>`;
+
+  // 転送システム表示
+  const adoptedTransfer=res.adoptedTransfer;
+  const baselinePt=res.baselinePt||0;
+  const transferRanking=res.transferRanking||[];
+  const transferAdoptedHtml=(()=>{
+    if(!adoptedTransfer){
+      return`<div style="color:#888;font-size:11px">転送なし（全候補でΔpt≤0）</div>`;
+    }
+    const kindLabel=adoptedTransfer.kind==='resource'?'採掘上限緩和':'外部素材供給';
+    return`<div style="font-size:12px;color:#7de8c0;font-weight:bold;margin-bottom:6px">
+      ✅ 採用: ${adoptedTransfer.name}（${kindLabel}）
+      ${fmt(adoptedTransfer.qty)}/m
+      <span style="color:#e8c07d;margin-left:8px">+${fmt(adoptedTransfer.deltaPt)} pt/m</span>
+    </div>
+    <div style="font-size:10px;color:#888">ベースライン: ${fmt(baselinePt)} pt/m → 採用後: ${fmt(baselinePt+adoptedTransfer.deltaPt)} pt/m</div>`;
+  })();
+  const rankEligible=transferRanking.filter(c=>c.kind!=='none').sort((a,b)=>b.deltaPt-a.deltaPt);
+  const rankNone=transferRanking.filter(c=>c.kind==='none');
+  const rankRows=rankEligible.map(c=>{
+    const isAdopted=adoptedTransfer&&c.name===adoptedTransfer.name;
+    const kindLabel=c.kind==='resource'?'採掘上限':'外部素材';
+    return`<tr style="${isAdopted?'background:#1e3a2f':''}">
+      <td>${isAdopted?'★ ':''}<span style="color:#e0e0e0">${c.name}</span></td>
+      <td style="color:#aaa">${kindLabel}</td>
+      <td style="color:#7de8c0">${fmt(c.qty)}/m</td>
+      <td class="${c.deltaPt>0.001?'gp':c.deltaPt<-0.001?'rp':'wp'}">${c.deltaPt>0?'+':''}${fmt(c.deltaPt)} pt/m</td>
+    </tr>`;
+  }).join('');
+  const noneRows=rankNone.map(c=>
+    `<tr><td style="color:#555">${c.name}</td><td style="color:#555">未モデル</td><td style="color:#555">${fmt(c.qty)}/m</td><td style="color:#555">―</td></tr>`
+  ).join('');
+  const transferHtml=`
+    <div class="sec"><div class="sth">🔀 転送システム最適選択</div><div class="sb">
+      ${transferAdoptedHtml}
+      <div style="margin-top:8px;font-size:11px;font-weight:bold;color:#aaa;margin-bottom:4px">候補別 Δpt ランキング</div>
+      <table><thead><tr><th>品目</th><th>種別</th><th>供給量</th><th>Δpt/m</th></tr></thead>
+      <tbody>${rankRows}${noneRows}</tbody></table>
+    </div></div>`;
+
+  rp.innerHTML=`${sum}
+  <div class="tabs">
+    <div class="tab active" data-t="summary" onclick="setTab('summary')">📊 サマリー</div>
+    <div class="tab" data-t="tree" onclick="setTab('tree')">🌿 生産ツリー＆機械台数</div>
+  </div>
+  <div id="tab_summary" class="tab-content active">
+    <div class="sec"><div class="sth">🔋 バッテリー生産内訳</div><div class="sb"><table><thead>${batHd}</thead><tbody>${batRows}</tbody></table></div></div>
+    <div class="sec"><div class="sth">💊 注射剤・部品・素材内訳</div><div class="sb"><table><thead>${othHd}</thead><tbody>${othRows}</tbody></table></div></div>
+    <div class="sec"><div class="sth">⚡ 電力収支</div><div class="sb"><table><tbody>${pwrRows}</tbody></table></div></div>
+    <div class="sec"><div class="sth">⛏ リソース消費</div><div class="sb">
+      <table><thead><tr><th>リソース</th><th>消費</th><th>上限</th><th>残</th><th>使用率</th></tr></thead>
+      <tbody>${resRows}${extRows}</tbody></table>
+      ${byproductHtml}
+    </div></div>
+    ${transferHtml}
+  </div>
+  <div id="tab_tree" class="tab-content">
+    <div class="sec" style="margin-bottom:8px"><div class="sth">🔧 全機械合計 (${f2(grandTotal)}台)</div>
+      <div class="sb"><div class="mach-grid">${allMachCards}</div></div></div>
+    ${legend}<div class="tree-grid">${treeCards}</div>
+  </div>`;
+  if(activeTab==='tree') setTab('tree');
+}
+
+function runOpt(){
+  if(currentCancel) currentCancel.cancelled=true;
+  const token={cancelled:false};
+  currentCancel=token;
+
+  document.getElementById('rp').innerHTML=`
+    <div style="padding:20px">
+      <div style="color:#7de8c0;margin-bottom:8px">🔄 最適化計算中...</div>
+      <div style="background:#1a2030;border-radius:4px;height:8px;width:100%">
+        <div id="prog-bar" style="background:#7de8c0;height:8px;border-radius:4px;width:0%;transition:width .2s"></div>
+      </div>
+      <div id="prog-txt" style="color:#888;font-size:11px;margin-top:6px">0%</div>
+    </div>`;
+
+  onProgress=(pct)=>{
+    if(token.cancelled) return;
+    const bar=document.getElementById('prog-bar');
+    const txt=document.getElementById('prog-txt');
+    if(bar) bar.style.width=pct+'%';
+    if(txt) txt.textContent=pct+'%';
+  };
+
+  optimizeAsync(token, onProgress, (result)=>{
+    if(token.cancelled) return;
+    currentCancel=null;
+    try{ renderResult(result); }
+    catch(e){ document.getElementById('rp').innerHTML=`<div class="noRes">エラー: ${e.message}</div>`; console.error(e); }
+  });
+}
+
+let tmr=null, currentCancel=null;
+function sch(){ clearTimeout(tmr); tmr=setTimeout(runOpt,300); }
+
+function initData(data){
+  RESOURCES=data.resources; MACHINES=data.machines; RECIPES=data.recipes;
+  EXCHANGE_ITEMS=data.exchangeItems;
+  BATTERY_GEN=data.batteryGen; BATTERY_PRIORITY=data.batteryPriority;
+  FIXED_POWER_OTHER=data.fixedPowerOther;
+  MACHINE_MAP=Object.fromEntries(MACHINES.map(m=>[m.name,m]));
+  RECIPE_MAP=Object.fromEntries(RECIPES.map(r=>[r.name,r]));
+  RESOURCE_IDS=new Set(RESOURCES.map(r=>r.name));
+  // ベースラインは転送なし
+  EXTERNAL_MAP={};
+  FIXED_POWER=RESOURCES.reduce((s,r)=>s+r.miningPower,0)+FIXED_POWER_OTHER;
+  BATTERY_GEN_MAP=Object.fromEntries(BATTERY_GEN.map(b=>[b.name,b.genPerUnit]));
+  BYPRODUCT_SUPPLY=new Set(data.byproductSupply);
+  SELF_SUPPLY=new Set(data.selfSupply);
+  LIMITED_MACHINES=MACHINES.filter(m=>m.max!==null);
+  NRES=RESOURCES.length; NLIM=LIMITED_MACHINES.length;
+  QPWR=NRES+NLIM; QSOUKI=QPWR+1; QDIM=QSOUKI+1;
+  RES_INDEX=Object.fromEntries(RESOURCES.map((r,i)=>[r.name,i]));
+  LIM_INDEX=Object.fromEntries(LIMITED_MACHINES.map((m,i)=>[m.name,i]));
+  PURIF_RECIPE=RECIPE_MAP['不活性壌晶還元'];
+  PURIF_POWER=PURIF_RECIPE?(MACHINE_MAP[PURIF_RECIPE.machine]?.power||0):0;
+  PURIF_LIM_IDX=PURIF_RECIPE?LIM_INDEX[PURIF_RECIPE.machine]:undefined;
+  // ITEM_MODELS はシナリオごとに再構築するため、ここでは不要
+  // ただし buildLeftPanel で buildItemModel に依存しないので省略可
+  ITEM_MODELS={};
+
+  // 転送システム初期化
+  const transfer=data.transfer||{ratePerHour:1500,candidates:[]};
+  TRANSFER_RATE_PER_HOUR=transfer.ratePerHour||1500;
+  TRANSFER_CANDIDATES=transfer.candidates||[];
+  // 全レシピの inputs に現れる名前の集合（material 判定用）
+  const effectiveInputNames=new Set();
+  for(const r of RECIPES){
+    for(const inp of r.inputs) effectiveInputNames.add(inp.name);
+  }
+  // 候補分類
+  TRANSFER_CLASSIFIED=TRANSFER_CANDIDATES.map(c=>{
+    const qty=TRANSFER_RATE_PER_HOUR/c.value/60;
+    let kind;
+    if(RESOURCE_IDS.has(c.name)) kind='resource';
+    else if(effectiveInputNames.has(c.name)) kind='material';
+    else kind='none';
+    return{name:c.name, value:c.value, qty, kind};
+  });
+
+  cfg={
+    resourceLimits:Object.fromEntries(RESOURCES.map(r=>[r.name,r.defaultMax])),
+    enabled:Object.fromEntries(EXCHANGE_ITEMS.map(e=>[e.name,true])),
+    mode:'c',
+  };
+}
+
+const fetchJson=url=>fetch(url).then(r=>{if(!r.ok)throw new Error(r.status);return r.json();});
+Promise.all([
+  fetchJson('data/config.json'),
+  fetchJson('data/resources.json'),
+  fetchJson('data/machines.json'),
+  fetchJson('data/recipes.json'),
+  fetchJson('data/transfer.json'),
+]).then(([config, resources, machines, recipes, transfer])=>{
+  initData({...config, resources, machines, recipes, transfer});
+  buildLeftPanel();
+  sch();
+}).catch(()=>{
+  document.getElementById('rp').innerHTML=
+    '<div class="noRes" style="line-height:2">⚠ data/ の読み込みに失敗しました。<br>ローカルサーバー経由で開いてください。<br><code style="background:#1a2030;padding:2px 8px;border-radius:3px">npx serve .</code>&nbsp; または VS Code の Live Server 拡張</div>';
+});
+</script>
+</body>
+</html>
