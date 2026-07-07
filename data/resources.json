@@ -1,5 +1,0 @@
-[
-  { "name": "源石鉱物", "defaultMax": 540, "miningPower": 150 },
-  { "name": "青鉄鉱物", "defaultMax": 90,  "miningPower": 60  },
-  { "name": "赤銅鉱物", "defaultMax": 360, "miningPower": 30  }
-]
