@@ -1,19 +1,17 @@
 {
   "fixedPowerOther": 300,
-  "batteryGen": [
-    { "name": "中容量武陵バッテリー", "genPerUnit": 2133.3333333333333 },
-    { "name": "小容量武陵バッテリー", "genPerUnit": 1066.6666666666667 }
-  ],
-  "batteryPriority": ["中容量武陵バッテリー", "小容量武陵バッテリー"],
-  "byproductSupply": ["汚水", "不活性壌晶廃液", "沈殿酸", "水"],
+  "byproductGlobal": ["汚水", "不活性壌晶廃液"],
   "selfSupply": ["芽針の種", "サンドリーフの種"],
-  "exchangeItems": [
-    { "name": "中容量武陵バッテリー", "pt": 54, "tags": ["A","B"],     "recipe": "中容量武陵バッテリー" },
-    { "name": "小容量武陵バッテリー", "pt": 25, "tags": ["A","B"], "recipe": "小容量武陵バッテリー" },
-    { "name": "芽針注射剤I",          "pt": 16, "tags": ["A"],     "recipe": "芽針注射剤I"          },
-    { "name": "芽針注射剤II",         "pt": 22, "tags": ["A","B"], "recipe": "芽針注射剤II"         },
-    { "name": "緋銅部品",             "pt": 48, "tags": ["A","B"],     "recipe": "緋銅部品"             },
-    { "name": "赤銅部品",             "pt": 48, "tags": ["A"],     "recipe": "赤銅部品"             },
-    { "name": "重息壌",               "pt": 27, "tags": ["A","B"],     "recipe": "重息壌"               }
-  ]
+  "batteries": [
+    { "name": "小容量武陵バッテリー", "genPerSec": 1600, "cycleSec": 40 },
+    { "name": "中容量武陵バッテリー", "genPerSec": 3200, "cycleSec": 40 },
+    { "name": "小容量谷地バッテリー", "genPerSec": 220,  "cycleSec": 40 },
+    { "name": "中容量谷地バッテリー", "genPerSec": 420,  "cycleSec": 40 },
+    { "name": "大容量谷地バッテリー", "genPerSec": 1100, "cycleSec": 40 }
+  ],
+  "mining": {
+    "purityRate": { "高": 20, "低": 10 },
+    "machinePower": { "電動I": 5, "電動II": 10 },
+    "waterPumpPower": 10
+  }
 }

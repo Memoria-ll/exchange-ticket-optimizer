@@ -1,0 +1,44 @@
+{
+  "regions": [
+    {
+      "id": "buryo", "name": "武陵",
+      "resources": [
+        { "name": "源石鉱物", "defaultMax": 540, "machine": "電動I",  "purity": "高" },
+        { "name": "青鉄鉱物", "defaultMax": 90,  "machine": "電動II", "purity": "高" },
+        { "name": "赤銅鉱物", "defaultMax": 360, "machine": "水力",   "purity": "高" }
+      ],
+      "liquidSupply": ["水", "沈殿酸"],
+      "exchangeItems": [
+        { "name": "中容量武陵バッテリー", "pt": 54, "tags": ["A", "B"] },
+        { "name": "小容量武陵バッテリー", "pt": 25, "tags": ["A", "B"] },
+        { "name": "芽針注射剤I", "pt": 16, "tags": ["A"] },
+        { "name": "芽針注射剤II", "pt": 22, "tags": ["A", "B"] },
+        { "name": "緋銅部品", "pt": 48, "tags": ["A", "B"] },
+        { "name": "赤銅部品", "pt": 48, "tags": ["A"] },
+        { "name": "重息壌", "pt": 27, "tags": ["A", "B"] }
+      ]
+    },
+    {
+      "id": "yachi", "name": "四号谷地",
+      "resources": [
+        { "name": "源石鉱物", "defaultMax": 560,  "machine": "電動I",  "purity": "高" },
+        { "name": "青鉄鉱物", "defaultMax": 1080, "machine": "電動II", "purity": "高" },
+        { "name": "紫晶鉱物", "defaultMax": 240,  "machine": "電動I",  "purity": "高" }
+      ],
+      "liquidSupply": [],
+      "exchangeItems": [
+        { "name": "喬花カプセルIII",     "pt": 70, "tags": ["A", "B", "C"] },
+        { "name": "大容量谷地バッテリー", "pt": 70, "tags": ["A", "B", "C"] },
+        { "name": "中容量谷地バッテリー", "pt": 30, "tags": ["A", "B", "C"] },
+        { "name": "小容量谷地バッテリー", "pt": 16, "tags": ["B"] },
+        { "name": "喬花カプセルII",      "pt": 27, "tags": ["A", "B", "C"] },
+        { "name": "喬花カプセルI",       "pt": 10, "tags": ["A"] },
+        { "name": "鋼製部品",           "pt": 3,  "tags": ["C"] },
+        { "name": "紫晶製ボトル",        "pt": 2,  "tags": ["A"] },
+        { "name": "紫晶部品",           "pt": 1,  "tags": ["A", "C"] },
+        { "name": "鉄製部品",           "pt": 1,  "tags": ["B", "C"] },
+        { "name": "結晶外殻",           "pt": 1,  "tags": ["A", "C"] }
+      ]
+    }
+  ]
+}
