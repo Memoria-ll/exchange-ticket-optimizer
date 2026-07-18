@@ -570,6 +570,40 @@
     "machine": "粉砕機"
   },
   {
+    "name": "紫晶粉末",
+    "inputs": [
+      {
+        "name": "紫晶繊維",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "紫晶粉末",
+        "qty": 30
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "結晶外殻粉末",
+    "inputs": [
+      {
+        "name": "結晶外殻",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "結晶外殻粉末",
+        "qty": 30
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
     "name": "不活性壌晶還元",
     "inputs": [
       {
