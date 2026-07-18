@@ -485,23 +485,6 @@
     "machine": "研磨機"
   },
   {
-    "name": "源石粉末",
-    "inputs": [
-      {
-        "name": "源石鉱物",
-        "qty": 30
-      }
-    ],
-    "outputs": [
-      {
-        "name": "源石粉末",
-        "qty": 30
-      }
-    ],
-    "byproducts": [],
-    "machine": "粉砕機"
-  },
-  {
     "name": "サンドリーフ粉末",
     "inputs": [
       {
@@ -519,33 +502,16 @@
     "machine": "粉砕機"
   },
   {
-    "name": "青鉄粉末",
+    "name": "蕎花粉末",
     "inputs": [
       {
-        "name": "青鉄塊",
+        "name": "蕎花",
         "qty": 30
       }
     ],
     "outputs": [
       {
-        "name": "青鉄粉末",
-        "qty": 30
-      }
-    ],
-    "byproducts": [],
-    "machine": "粉砕機"
-  },
-  {
-    "name": "炭塊粉末",
-    "inputs": [
-      {
-        "name": "炭塊",
-        "qty": 30
-      }
-    ],
-    "outputs": [
-      {
-        "name": "炭塊粉末",
+        "name": "蕎花粉末",
         "qty": 60
       }
     ],
@@ -553,7 +519,92 @@
     "machine": "粉砕機"
   },
   {
-    "name": "赤銅粉末",
+    "name": "シトローム粉末",
+    "inputs": [
+      {
+        "name": "シトローム",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "シトローム粉末",
+        "qty": 60
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "アケトン粉末",
+    "inputs": [
+      {
+        "name": "アケトン樹木",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "アケトン粉末",
+        "qty": 60
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "錦草粉末",
+    "inputs": [
+      {
+        "name": "錦草",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "錦草粉末",
+        "qty": 60
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "芽針粉末",
+    "inputs": [
+      {
+        "name": "芽針",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "芽針粉末",
+        "qty": 60
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "源石粉末生産",
+    "inputs": [
+      {
+        "name": "源石鉱物",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "源石粉末",
+        "qty": 30
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "赤銅粉末生産",
     "inputs": [
       {
         "name": "赤銅塊",
@@ -570,7 +621,24 @@
     "machine": "粉砕機"
   },
   {
-    "name": "紫晶粉末",
+    "name": "青鉄粉末生産",
+    "inputs": [
+      {
+        "name": "青鉄塊",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "青鉄粉末",
+        "qty": 30
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "紫晶粉末生産",
     "inputs": [
       {
         "name": "紫晶繊維",
@@ -587,7 +655,24 @@
     "machine": "粉砕機"
   },
   {
-    "name": "結晶外殻粉末",
+    "name": "炭塊粉末生産",
+    "inputs": [
+      {
+        "name": "炭塊",
+        "qty": 30
+      }
+    ],
+    "outputs": [
+      {
+        "name": "炭塊粉末",
+        "qty": 60
+      }
+    ],
+    "byproducts": [],
+    "machine": "粉砕機"
+  },
+  {
+    "name": "結晶外殻粉末生産",
     "inputs": [
       {
         "name": "結晶外殻",

@@ -204,6 +204,30 @@ check('外部電池供給下でfastEvとcomputeFlowが一致する(verifyModel)'
   set('EXTERNAL_MAP = {};');
 });
 
+check('recipeForItem: 壌晶廃液は本流(化学反応炉)が選ばれ還元レシピに奪われない', () => {
+  sandbox.applyRegion('buryo');
+  const r = sandbox.recipeForItem('壌晶廃液');
+  assert.ok(r, '壌晶廃液のレシピが見つかるはず');
+  assert.notStrictEqual(r.name, '不活性壌晶還元',
+    'タイブレークは前方一致の本流を優先するはず');
+  assert.strictEqual(r.machine, '化学反応炉');
+
+  // タイトル命名移行後(壌晶廃液→壌晶廃液生産)も本流が選ばれることを、
+  // 実 RECIPES の名前を書き換えて実関数経由でピンする。配列順で偶然
+  // cands[0] が本流になる偽greenを避けるため、逆順でも確認する
+  set("RECIPES.find(r=>r.name==='壌晶廃液').name='壌晶廃液生産'");
+  set('RECIPES.reverse()');
+  try {
+    const r2 = sandbox.recipeForItem('壌晶廃液');
+    assert.strictEqual(r2.name, '壌晶廃液生産',
+      'タイトル命名後も(配列順に依らず)前方一致で本流が選ばれるはず');
+  } finally {
+    // RECIPES の要素は RAW.recipes と同一参照 — 後続チェックのため必ず戻す
+    set('RECIPES.reverse()');
+    set("RECIPES.find(r=>r.name==='壌晶廃液生産').name='壌晶廃液'");
+  }
+});
+
 // ---------------------------------------------------------------
 // レポート
 // ---------------------------------------------------------------

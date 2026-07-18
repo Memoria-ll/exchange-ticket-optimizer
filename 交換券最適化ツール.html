@@ -127,11 +127,13 @@ function filterRecipesForRegion(region){
   return RAW.recipes.filter(r=>!isLiquidPumpRecipe(r) || liquidOk.has(r.outputs[0].name));
 }
 
-// アイテム名→それを出力するレシピ。複数候補がある場合は r.name===name（本流）を優先。
+// アイテム名→それを出力するレシピ。複数候補がある場合は本流を優先。
+// レシピ名はカード見出し由来（「壌晶廃液生産」等）と旧命名（=出力品名）が混在するため、
+// 「アイテム名で始まる名前」を本流とみなす（不活性壌晶還元 のような変換系は前方一致しない）。
 function recipeForItem(name){
   const cands=RECIPES.filter(r=>r.outputs.some(o=>o.name===name));
   if(cands.length===0) return null;
-  return cands.find(r=>r.name===name)||cands[0];
+  return cands.find(r=>r.name.startsWith(name))||cands[0];
 }
 
 // 静的実行可能性判定: 採掘/自給/副産物供給で止まるか、レシピの全入力が再帰的に obtainable なら true。
