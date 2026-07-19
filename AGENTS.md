@@ -24,6 +24,11 @@ computeFlow / verifyModel を実データ経路で直接叩く）。
   吸収された実例）。迷ったら n → unknown 登録へ。
 - 粉末系アイテムは同一スプライトの色替え。形状照合(TM_CCOEFF_NORMED)だけでは色違い同士が
   0.85 を超える（実測 0.89〜0.93）— icon_matcher の HUE_GATE（色相ヒストグラム）が防波堤。
+- HTML は recipe の env（環境条件）を未評価 — env 違いの代替レシピが併存すると
+  recipeForItem は前方一致タイブレークで両方一致し配列順で拾う。環境条件の最適化側
+  モデル化は未対応（#3 の代替レシピ地域別選択と同族の課題）。
+- 精製機には動作モード（液体/ガス）があり recipes.json はモードを区別しない。マシン台数を
+  共有制約としてモデル化する際はモード排他を考慮すること。
 
 ### Invariants / identity keys
 - 電池はどのレシピの入力にも現れない（全38レシピ確認済）。これが「EXTERNAL_MAP の電池
@@ -50,6 +55,12 @@ computeFlow / verifyModel を実データ経路で直接叩く）。
   scanner は入力署名の違いを検出して「タイトル（主入力名）」で対称に一意化する。完全同名の
   重複エントリを recipes.json に入れてはいけない（obtainable の visited 等がレシピ名を
   同一性キーに使う）。代替レシピの地域別選択は #3。
+- 環境条件（env）はレシピ同一性の一部。ガスモードには同名・同入力名で env と数量だけが
+  違う対が実在（緋銅ガス精製 ×2）し、入力署名（名前ベース・数量不問）では分離できない —
+  env 付きレシピは常に「タイトル（環境名）」+ env フィールドで一意化する。
+- ガス散布機の環境構築コストは data/environments.json（name/machine/gas/minRate）。
+  minRate は環境維持の最低供給レート[単位/分]で、レシピ qty（クラフト量×60/秒）と意味論が
+  違うため recipes.json に入れない。取込は `cli.py envscan`。
 
 ### Environment quirks
 - recipes.json は scanner 自動生成。手で編集しない。
